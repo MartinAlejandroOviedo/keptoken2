@@ -1,5 +1,5 @@
 # Configuración
-$commitMessage = "Backup automático - $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
+$commitMessage = "Backup automatico - $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
 $githubUser = "MartinAlejandroOviedo"
 $repoName = "keptoken2"
 $repoUrl = "https://github.com/$githubUser/$repoName.git"
@@ -8,6 +8,10 @@ $branchName = "main"
 # Configuración de usuario por defecto
 $defaultUserName = "MartinAlejandroOviedo"
 $defaultUserEmail = "quamagi@hotmail.com"
+
+# Configurar la codificación de salida
+$OutputEncoding = [System.Text.Encoding]::UTF8
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 # Configurar helper de credenciales
 Write-Host "Configurando helper de credenciales..."
@@ -47,7 +51,7 @@ if (-not (Test-Path ".git")) {
 }
 
 # Verificar conexión con GitHub
-Write-Host "Verificando conexión con GitHub..."
+Write-Host "Verificando conexion con GitHub..."
 try {
     $remoteStatus = git remote -v
     if (-not ($remoteStatus -match $repoUrl)) {
@@ -55,7 +59,7 @@ try {
         git remote set-url origin $repoUrl
     }
 } catch {
-    Write-Host "Error al verificar conexión con GitHub: $_"
+    Write-Host "Error al verificar conexion con GitHub: $_"
     exit
 }
 
@@ -201,7 +205,7 @@ Write-Host "Repositorio: $repoUrl"
 Write-Host "Rama: $branchName"
 Write-Host "`nPor favor, ingresa tus credenciales de GitHub cuando se te solicite..."
 Write-Host "Usuario: $githubUser"
-Write-Host "Contraseña: (tu token de acceso personal de GitHub)`n"
+Write-Host "Contrasena: (tu token de acceso personal de GitHub)`n"
 
 try {
     Write-Host "Iniciando push..."
@@ -224,15 +228,15 @@ try {
         throw "Error en el push"
     }
 } catch {
-    Write-Host "`n❌ Error durante el push:"
-    Write-Host "Código de error: $LASTEXITCODE"
+    Write-Host "`nError durante el push:"
+    Write-Host "Codigo de error: $LASTEXITCODE"
     Write-Host "Mensaje: $_"
     Write-Host "`nPor favor, verifica:"
     Write-Host "1. Que el repositorio $repoName existe en GitHub"
     Write-Host "2. Que tienes permisos para escribir en el repositorio"
     Write-Host "3. Que tus credenciales son correctas"
-    Write-Host "4. Que tienes conexión a internet"
+    Write-Host "4. Que tienes conexion a internet"
     exit
 }
 
-Write-Host "`nBackup en GitHub completado ✅" 
+Write-Host "`nBackup en GitHub completado" 
