@@ -10,6 +10,10 @@ $githubToken = "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"  # Reemplaza con tu to
 $defaultUserName = "MartinAlejandroOviedo"
 $defaultUserEmail = "quamagi@hotmail.com"
 
+# Configurar helper de credenciales
+Write-Host "Configurando helper de credenciales..."
+git config --global credential.helper wincred
+
 # Deshabilitar firma GPG globalmente
 Write-Host "Configurando Git sin firma GPG..."
 git config --global commit.gpgsign false
