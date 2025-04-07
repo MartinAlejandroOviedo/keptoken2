@@ -74,7 +74,7 @@ Write-Host $status
 
 # Obtener información detallada de los cambios
 Write-Host "`nAnalizando cambios..."
-$changes = git diff --cached --name-status
+$changes = git status --porcelain
 $totalSize = 0
 $fileCount = 0
 $modifiedFiles = @()
@@ -122,8 +122,8 @@ function Get-EstimatedUploadTime {
 
 foreach ($change in $changes) {
     $fileCount++
-    $status = $change.Substring(0,1)
-    $filePath = $change.Substring(2)
+    $status = $change.Substring(0,2).Trim()
+    $filePath = $change.Substring(3)
     $fileSize = (Get-Item $filePath -ErrorAction SilentlyContinue).Length
     
     if ($fileSize) {
@@ -160,7 +160,7 @@ foreach ($change in $changes) {
 # Mostrar resumen de cambios
 Write-Host "`nResumen de cambios:"
 Write-Host "Total de archivos: $fileCount"
-Write-Host "Tamaño total: $([math]::Round($totalSize/1KB, 2)) KB"
+Write-Host "Tamano total: $([math]::Round($totalSize/1KB, 2)) KB"
 Write-Host "Tiempo estimado de subida: $(Get-EstimatedUploadTime $totalSize)"
 
 if ($largeFiles.Count -gt 0) {
@@ -219,7 +219,7 @@ try {
         Write-Host "- Archivos modificados: $($modifiedFiles.Count)"
         Write-Host "- Archivos nuevos: $($addedFiles.Count)"
         Write-Host "- Archivos eliminados: $($deletedFiles.Count)"
-        Write-Host "- Tamaño total: $([math]::Round($totalSize/1KB, 2)) KB"
+        Write-Host "- Tamano total: $([math]::Round($totalSize/1KB, 2)) KB"
         Write-Host "- Tiempo de subida: $(Get-EstimatedUploadTime $totalSize)"
         if ($largeFiles.Count -gt 0) {
             Write-Host "- Archivos grandes: $($largeFiles.Count)"
