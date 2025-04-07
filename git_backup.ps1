@@ -4,6 +4,7 @@ $githubUser = "MartinAlejandroOviedo"
 $repoName = "keptoken2"
 $repoUrl = "https://github.com/$githubUser/$repoName.git"
 $branchName = "main"
+$githubToken = "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"  # Reemplaza con tu token
 
 # Configuración de usuario por defecto
 $defaultUserName = "MartinAlejandroOviedo"
@@ -42,13 +43,18 @@ if (-not (Test-Path ".git")) {
     git remote add origin $repoUrl
 }
 
+# Configurar autenticación con token
+Write-Host "Configurando autenticación con GitHub..."
+$authUrl = $repoUrl -replace "https://", "https://$githubToken@"
+git remote set-url origin $authUrl
+
 # Verificar conexión con GitHub
 Write-Host "Verificando conexión con GitHub..."
 try {
     $remoteStatus = git remote -v
     if (-not ($remoteStatus -match $repoUrl)) {
         Write-Host "Actualizando URL del repositorio remoto..."
-        git remote set-url origin $repoUrl
+        git remote set-url origin $authUrl
     }
 } catch {
     Write-Host "Error al verificar conexión con GitHub: $_"
@@ -71,28 +77,22 @@ git add .
 Write-Host "Creando commit..."
 git commit -m $commitMessage
 
-# Verificar si hay cambios para push
-$status = git status
-if ($status -match "Your branch is ahead of 'origin/$branchName'") {
-    Write-Host "Subiendo cambios a GitHub..."
-    try {
-        git push -u origin $branchName
-        Write-Host "Cambios subidos exitosamente a GitHub"
-    } catch {
-        Write-Host "Error al subir cambios: $_"
-        Write-Host "Intentando con token de acceso personal..."
-        $token = Read-Host "Ingresa tu token de acceso personal de GitHub"
-        $authUrl = $repoUrl -replace "https://", "https://$token@"
-        git remote set-url origin $authUrl
-        git push -u origin $branchName
-    }
-} else {
-    Write-Host "No hay cambios nuevos para subir"
+# Realizar push
+Write-Host "Subiendo cambios a GitHub..."
+try {
+    git push -u origin $branchName --force
+    Write-Host "Cambios subidos exitosamente a GitHub"
+} catch {
+    Write-Host "Error al subir cambios: $_"
+    Write-Host "Por favor, verifica:"
+    Write-Host "1. Que el repositorio $repoName existe en GitHub"
+    Write-Host "2. Que el token de acceso es válido"
+    Write-Host "3. Que tienes permisos para escribir en el repositorio"
+    exit
 }
 
-# Limpiar credenciales temporales
-if ($token) {
-    git remote set-url origin $repoUrl
-}
+# Limpiar credenciales
+Write-Host "Limpiando credenciales..."
+git remote set-url origin $repoUrl
 
 Write-Host "Backup en GitHub completado" 
