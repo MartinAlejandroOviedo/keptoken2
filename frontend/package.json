@@ -1,0 +1,13 @@
+{
+  "name": "keeptoken-frontend",
+  "version": "1.0.0",
+  "description": "Frontend para Keeptoken",
+  "scripts": {
+    "build:css": "tailwindcss -i ./public/assets/css/tailwind.css -o ./public/assets/css/tailwind.min.css --minify"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.0.0",
+    "autoprefixer": "^10.0.0",
+    "postcss": "^8.0.0"
+  }
+}

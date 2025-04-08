@@ -1,0 +1,23 @@
+/* Estilos personalizados para Keeptoken */
+
+/* Estilos generales */
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Estilos para la cabecera */
+header {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Estilos para el contenido principal */
+main {
+    min-height: calc(100vh - 80px);
+}
+
+/* Estilos para los contenedores */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+} 

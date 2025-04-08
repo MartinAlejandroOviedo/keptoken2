@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Keeptoken</title>
+    <link href="/assets/css/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between">
+                <div class="flex space-x-7">
+                    <div>
+                        <a href="/" class="flex items-center py-4">
+                            <span class="font-semibold text-gray-500 text-lg">Keeptoken</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">Dashboard</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Tarjeta de Tokens -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">Tokens</h2>
+                <p class="text-3xl font-bold text-blue-600">0</p>
+                <p class="text-gray-500 mt-2">Tokens activos</p>
+            </div>
+
+            <!-- Tarjeta de Usuarios -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">Usuarios</h2>
+                <p class="text-3xl font-bold text-green-600">0</p>
+                <p class="text-gray-500 mt-2">Usuarios registrados</p>
+            </div>
+
+            <!-- Tarjeta de Transacciones -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">Transacciones</h2>
+                <p class="text-3xl font-bold text-purple-600">0</p>
+                <p class="text-gray-500 mt-2">Transacciones totales</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/assets/js/app.js"></script>
+</body>
+</html> 
