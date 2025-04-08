@@ -18,6 +18,7 @@ $defaultUserEmail = "quamagi@hotmail.com"
 # Configurar la codificación de salida
 $OutputEncoding = [System.Text.Encoding]::UTF8
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+[Console]::InputEncoding = [System.Text.Encoding]::UTF8
 
 Write-Host "=== Iniciando proceso de backup a GitHub ==="
 
@@ -80,15 +81,9 @@ Write-Host "Verificando estado del repositorio..."
 $status = git status
 Write-Host $status
 
-# Verificar si hay cambios para hacer commit
-$changes = git status --porcelain
-if (-not $changes) {
-    Write-Host "No hay cambios para hacer commit."
-    exit 0
-}
-
 # Obtener información detallada de los cambios
 Write-Host "`nAnalizando cambios..."
+$changes = git status --porcelain
 $totalSize = 0
 $fileCount = 0
 $modifiedFiles = @()
@@ -100,20 +95,47 @@ foreach ($change in $changes) {
     $status = $change.Substring(0, 2).Trim()
     $filePath = $change.Substring(3)
     
-    if (Test-Path $filePath) {
-        $fileSize = (Get-Item $filePath).Length
-        $totalSize += $fileSize
-        $fileCount++
-        
-        if ($fileSize -gt 10MB) {
-            $largeFiles += $filePath
-        }
-    }
-    
     switch ($status) {
-        "M" { $modifiedFiles += $filePath }
-        "A" { $addedFiles += $filePath }
-        "D" { $deletedFiles += $filePath }
+        "M" { 
+            if (Test-Path $filePath) {
+                $fileSize = (Get-Item $filePath).Length
+                $totalSize += $fileSize
+                $fileCount++
+                $modifiedFiles += $filePath
+                
+                if ($fileSize -gt 10MB) {
+                    $largeFiles += $filePath
+                }
+            }
+        }
+        "A" { 
+            if (Test-Path $filePath) {
+                $fileSize = (Get-Item $filePath).Length
+                $totalSize += $fileSize
+                $fileCount++
+                $addedFiles += $filePath
+                
+                if ($fileSize -gt 10MB) {
+                    $largeFiles += $filePath
+                }
+            }
+        }
+        "D" { 
+            $deletedFiles += $filePath
+            $fileCount++
+        }
+        "??" { 
+            if (Test-Path $filePath) {
+                $fileSize = (Get-Item $filePath).Length
+                $totalSize += $fileSize
+                $fileCount++
+                $addedFiles += $filePath
+                
+                if ($fileSize -gt 10MB) {
+                    $largeFiles += $filePath
+                }
+            }
+        }
     }
 }
 
@@ -133,7 +155,18 @@ if ($largeFiles.Count -gt 0) {
 # Hacer el commit
 Write-Host "`nRealizando commit..."
 try {
-    git add .
+    # Agregar archivos nuevos y modificados
+    if ($addedFiles.Count -gt 0 -or $modifiedFiles.Count -gt 0) {
+        git add .
+    }
+    
+    # Eliminar archivos marcados para eliminación
+    if ($deletedFiles.Count -gt 0) {
+        $deletedFiles | ForEach-Object {
+            git rm $_
+        }
+    }
+    
     git commit -m $commitMessage
     Write-Host "Commit realizado exitosamente."
 } catch {
